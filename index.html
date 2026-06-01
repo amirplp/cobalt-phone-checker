@@ -17,7 +17,7 @@
 
         <nav class="page-switch" aria-label="Two page navigation">
           <button class="active" type="button" data-page-target="search">Search</button>
-          <button type="button" data-page-target="result">Result</button>
+          <button type="button" data-page-target="result" disabled>Result</button>
         </nav>
 
         <p class="tag">Page 1 of 2</p>
@@ -37,7 +37,7 @@
 
           <label class="search-box" for="modelSearch">
             <span>Model name</span>
-            <input id="modelSearch" type="search" autocomplete="off" placeholder="iPhone 15, Samsung A15, Tecno Spark..." autofocus />
+            <input id="modelSearch" type="search" autocomplete="off" placeholder="Type your phone model" autofocus />
           </label>
 
           <div class="quick-list" id="quickList" aria-label="Matching phone models"></div>
@@ -53,7 +53,7 @@
           </details>
         </section>
 
-        <button class="primary-action" id="goResult" type="button">See my impact</button>
+        <button class="primary-action" id="goResult" type="button" disabled>Search a model first</button>
       </section>
 
       <section class="screen result-screen" id="resultScreen" aria-labelledby="result-title" hidden>
@@ -76,6 +76,19 @@
         <p class="note" id="modelNote">
           Estimated from battery capacity and typical cobalt-containing lithium-ion battery chemistry.
         </p>
+
+        <section class="lens-panel" aria-label="Interactive impact lens">
+          <p class="tag">Tap an impact</p>
+          <div class="lens-buttons">
+            <button class="lens-button active" type="button" data-lens="cobalt">Cobalt</button>
+            <button class="lens-button" type="button" data-lens="congo">Congo</button>
+            <button class="lens-button" type="button" data-lens="labour">Labour</button>
+            <button class="lens-button" type="button" data-lens="climate">Climate</button>
+          </div>
+          <p id="lensInsight">
+            This phone estimate links battery size to cobalt demand, Congo exposure, labour pressure, and battery emissions.
+          </p>
+        </section>
 
         <section class="impact-list" aria-label="Estimated impact result">
           <article>

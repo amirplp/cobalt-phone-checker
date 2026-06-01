@@ -105,6 +105,12 @@ button {
   color: var(--cream);
 }
 
+.page-switch button:disabled,
+.primary-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
 .page-switch.dark {
   border-color: rgba(255, 246, 230, 0.16);
   background: rgba(255, 246, 230, 0.08);
@@ -155,6 +161,7 @@ h2 {
 
 .panel,
 .impact-hero,
+.lens-panel,
 .congo-panel,
 .class-panel,
 .takeaway-panel,
@@ -216,9 +223,31 @@ h2 {
 .quick-list {
   display: grid;
   gap: 8px;
-  max-height: 330px;
+  max-height: 300px;
   overflow: auto;
   margin: 14px 0;
+}
+
+.search-empty {
+  border: 1px dashed rgba(108, 98, 88, 0.34);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.42);
+  color: var(--muted);
+  padding: 18px;
+  text-align: center;
+}
+
+.search-empty strong {
+  display: block;
+  color: var(--ink);
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+
+.search-empty span {
+  display: block;
+  font-size: 0.88rem;
+  line-height: 1.4;
 }
 
 .model-button {
@@ -370,6 +399,43 @@ input[type="range"] {
 .result-screen .note {
   margin: 0;
   color: rgba(255, 246, 230, 0.76);
+}
+
+.lens-panel {
+  display: grid;
+  gap: 12px;
+  border-color: rgba(255, 246, 230, 0.14);
+  background: rgba(255, 246, 230, 0.07);
+}
+
+.lens-buttons {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.lens-button {
+  min-height: 38px;
+  border: 1px solid rgba(255, 246, 230, 0.16);
+  border-radius: 999px;
+  background: rgba(17, 16, 15, 0.22);
+  color: rgba(255, 246, 230, 0.72);
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.lens-button.active {
+  border-color: var(--amber);
+  background: var(--amber);
+  color: var(--ink);
+}
+
+#lensInsight {
+  margin: 0;
+  color: rgba(255, 246, 230, 0.82);
+  font-size: 1rem;
+  font-weight: 750;
+  line-height: 1.45;
 }
 
 .impact-list,
@@ -528,6 +594,10 @@ input[type="range"] {
   .impact-list article,
   .class-grid article {
     grid-template-columns: 1fr;
+  }
+
+  .lens-buttons {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .impact-list strong,

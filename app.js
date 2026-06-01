@@ -331,7 +331,7 @@ const ui = {
   classPeople: document.querySelector("#classPeople")
 };
 
-let activePhone = phones.find((phone) => phone.model === "iPhone 15 Pro Max") || phones[0];
+let activePhone = null;
 let currentImpact = null;
 let activeLens = "cobalt";
 
@@ -414,6 +414,7 @@ function renderResult(phone, custom = false) {
   const impact = estimateImpact(phone.capacity);
   const estimate = impact.cobalt;
   currentImpact = impact;
+  setResultAvailable(true);
   ui.selectedBrand.textContent = custom ? "Custom battery estimate" : phone.brand;
   ui.selectedModel.textContent = custom ? `${formatNumber(phone.capacity)} mAh phone battery` : phone.model;
   ui.batteryBadge.textContent = `${formatNumber(phone.capacity)} mAh`;
@@ -447,6 +448,7 @@ function renderLensInsight() {
   const model = ui.selectedModel.textContent;
   const copy = {
     cobalt: `${model} is estimated at ${ui.cobaltMetric.textContent} of cobalt in the battery, with about ${ui.drcMetric.textContent} linked to the DRC share of global mined cobalt.`,
+    congo: `The Congo score is ${ui.riskScore.textContent}. It connects this battery estimate to a supply chain where the DRC produces most of the world's mined cobalt.`,
     labour: `${model} shows ${ui.labourMetric.textContent} of labour-risk exposure and ${ui.wageMetric.textContent} of low-wage pressure in this proxy estimate.`,
     climate: `${model} is estimated at ${ui.co2Metric.textContent} battery production CO2e. The class simulator below shows how fast that footprint scales.`
   };
@@ -461,28 +463,23 @@ function renderList(query = "") {
   const terms = normalizedQuery.split(/\s+/).filter(Boolean);
   const filtered = terms.length
     ? phones.filter((phone) => terms.every((term) => phone.searchKey.includes(term)))
-    : [
-        "iPhone 15 Pro Max",
-        "iPhone 14 Pro Max",
-        "Galaxy A15",
-        "Galaxy S24 Ultra",
-        "Galaxy A55",
-        "Tecno Spark 20",
-        "Tecno Camon 30",
-        "Infinix Hot 40",
-        "Oppo A58",
-        "Vivo Y28",
-        "Redmi Note 13 Pro",
-        "Realme C65",
-        "itel P55",
-        "QMobile Rocket Pro"
-      ].map((name) => phones.find((phone) => phone.model === name)).filter(Boolean);
+    : [];
 
   ui.modelCount.textContent = terms.length
     ? `${filtered.length} matches`
     : `${phones.length}+ models`;
 
-  const visible = filtered.slice(0, terms.length ? 36 : 14);
+  if (!terms.length) {
+    ui.quickList.innerHTML = `
+      <div class="search-empty">
+        <strong>Start typing to search</strong>
+        <span>Try your exact model name, for example A15, Spark 20, iPhone 13, Reno, Redmi, or Infinix.</span>
+      </div>
+    `;
+    return;
+  }
+
+  const visible = filtered.slice(0, 36);
   ui.quickList.innerHTML = visible.map((phone) => {
     const estimate = estimateCobalt(phone.capacity);
     const active = phone === activePhone ? " active" : "";
@@ -510,8 +507,21 @@ function renderList(query = "") {
   }
 }
 
+function setResultAvailable(available) {
+  ui.goResult.disabled = !available;
+  ui.goResult.textContent = available ? "See my impact" : "Search a model first";
+  ui.pageButtons.forEach((button) => {
+    if (button.dataset.pageTarget === "result") {
+      button.disabled = !available;
+    }
+  });
+}
+
 function showResultScreen() {
-  if (!ui.startScreen || !ui.resultScreen) return;
+  if (!ui.startScreen || !ui.resultScreen || !currentImpact) {
+    ui.modelSearch?.focus();
+    return;
+  }
   ui.startScreen.hidden = true;
   ui.resultScreen.hidden = false;
   ui.pageButtons.forEach((button) => {
@@ -621,6 +631,8 @@ ui.pageButtons.forEach((button) => {
   button.addEventListener("click", () => {
     if (button.dataset.pageTarget === "search") {
       showSearchScreen();
+    } else if (!currentImpact) {
+      ui.modelSearch?.focus();
     } else {
       showResultScreen();
     }
@@ -634,5 +646,5 @@ ui.lensButtons.forEach((button) => {
 });
 
 ui.modelCount.textContent = `${phones.length}+ models`;
+setResultAvailable(false);
 renderList();
-renderResult(activePhone);
