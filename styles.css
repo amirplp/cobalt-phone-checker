@@ -351,11 +351,17 @@ input[type="range"] {
 .result-screen {
   background: var(--charcoal);
   color: var(--cream);
+  gap: 14px;
 }
 
 .result-screen .tag,
 .brand-line {
   color: var(--amber);
+}
+
+.result-header {
+  display: grid;
+  gap: 7px;
 }
 
 .brand-line,
@@ -370,9 +376,11 @@ input[type="range"] {
 
 .impact-hero {
   display: grid;
-  gap: 4px;
-  border-color: rgba(255, 246, 230, 0.14);
-  background: rgba(255, 246, 230, 0.07);
+  gap: 14px;
+  border: 0;
+  background: var(--amber);
+  color: var(--ink);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
 }
 
 .impact-hero span,
@@ -385,15 +393,32 @@ input[type="range"] {
   text-transform: uppercase;
 }
 
+.impact-hero span,
+.impact-hero em {
+  color: rgba(21, 18, 15, 0.72);
+}
+
 .impact-hero strong {
-  color: var(--amber);
-  font-size: clamp(4rem, 20vw, 6.5rem);
+  color: var(--ink);
+  display: block;
+  font-size: clamp(5rem, 27vw, 8rem);
   line-height: 0.9;
 }
 
 .impact-hero em {
-  color: rgba(255, 246, 230, 0.76);
+  display: block;
   font-style: normal;
+  font-weight: 850;
+}
+
+.impact-hero p {
+  border-top: 1px solid rgba(21, 18, 15, 0.22);
+  margin: 0;
+  padding-top: 12px;
+  color: rgba(21, 18, 15, 0.78);
+  font-size: 1.02rem;
+  font-weight: 750;
+  line-height: 1.42;
 }
 
 .result-screen .note {
@@ -404,8 +429,9 @@ input[type="range"] {
 .lens-panel {
   display: grid;
   gap: 12px;
-  border-color: rgba(255, 246, 230, 0.14);
-  background: rgba(255, 246, 230, 0.07);
+  border-color: rgba(255, 246, 230, 0.2);
+  background: var(--cream);
+  color: var(--ink);
 }
 
 .lens-buttons {
@@ -416,10 +442,10 @@ input[type="range"] {
 
 .lens-button {
   min-height: 38px;
-  border: 1px solid rgba(255, 246, 230, 0.16);
+  border: 1px solid rgba(21, 18, 15, 0.16);
   border-radius: 999px;
-  background: rgba(17, 16, 15, 0.22);
-  color: rgba(255, 246, 230, 0.72);
+  background: rgba(21, 18, 15, 0.05);
+  color: rgba(21, 18, 15, 0.72);
   font-size: 0.82rem;
   font-weight: 900;
 }
@@ -432,10 +458,12 @@ input[type="range"] {
 
 #lensInsight {
   margin: 0;
-  color: rgba(255, 246, 230, 0.82);
+  border-left: 4px solid var(--amber);
+  color: rgba(21, 18, 15, 0.82);
   font-size: 1rem;
   font-weight: 750;
   line-height: 1.45;
+  padding-left: 12px;
 }
 
 .impact-list,
@@ -456,8 +484,9 @@ input[type="range"] {
 }
 
 .impact-list article {
-  border: 1px solid rgba(255, 246, 230, 0.12);
-  background: rgba(255, 246, 230, 0.06);
+  border: 1px solid rgba(255, 246, 230, 0.18);
+  background: var(--cream);
+  color: var(--ink);
 }
 
 .impact-list strong,
@@ -468,10 +497,18 @@ input[type="range"] {
   text-align: right;
 }
 
+.impact-list span {
+  color: rgba(21, 18, 15, 0.58);
+}
+
+.impact-list strong {
+  color: var(--copper);
+}
+
 .impact-list small {
   display: block;
   grid-column: 1 / -1;
-  color: rgba(255, 246, 230, 0.68);
+  color: rgba(21, 18, 15, 0.6);
   line-height: 1.3;
 }
 

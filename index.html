@@ -62,15 +62,20 @@
           <button class="active" type="button" data-page-target="result">Result</button>
         </nav>
 
-        <p class="tag">Page 2 of 2</p>
-        <p class="brand-line" id="selectedBrand">Apple</p>
-        <h1 id="result-title"><span id="selectedModel">iPhone 15 Pro Max</span></h1>
-        <p class="battery-line">Battery: <strong id="batteryBadge">4,422 mAh</strong></p>
+        <section class="result-header">
+          <p class="tag">Page 2 of 2</p>
+          <p class="brand-line" id="selectedBrand">Apple</p>
+          <h1 id="result-title"><span id="selectedModel">iPhone 15 Pro Max</span></h1>
+          <p class="battery-line">Battery: <strong id="batteryBadge">4,422 mAh</strong></p>
+        </section>
 
         <section class="impact-hero" aria-live="polite">
-          <span>Your cobalt estimate</span>
-          <strong id="gramsMain">11.1g</strong>
-          <em id="gramsRange">estimated range: 7.7-14.5g cobalt</em>
+          <div>
+            <span>Your phone may contain about</span>
+            <strong id="gramsMain">11.1g</strong>
+            <em id="gramsRange">estimated range: 7.7-14.5g cobalt</em>
+          </div>
+          <p>Cobalt helps power lithium-ion batteries. The question is not only how much is inside, but who and where the supply chain touches.</p>
         </section>
 
         <p class="note" id="modelNote">
@@ -92,24 +97,14 @@
 
         <section class="impact-list" aria-label="Estimated impact result">
           <article>
-            <span>Cobalt in battery</span>
-            <strong id="cobaltMetric">11.1g</strong>
-            <small id="cobaltMetricSub">battery cathode estimate</small>
-          </article>
-          <article>
-            <span>Congo-linked cobalt</span>
+            <span>Congo-linked</span>
             <strong id="drcMetric">8.4g</strong>
             <small>based on global mine share</small>
           </article>
           <article>
-            <span>Labour pressure</span>
+            <span>Labour</span>
             <strong id="labourMetric">7 min</strong>
             <small id="labourMetricSub">artisanal-risk proxy</small>
-          </article>
-          <article>
-            <span>Low-wage pressure</span>
-            <strong id="wageMetric">$0.02</strong>
-            <small id="wageMetricSub">reported low-wage equivalent</small>
           </article>
           <article>
             <span>Battery CO2e</span>
@@ -117,9 +112,9 @@
             <small id="co2MetricSub">cell production only</small>
           </article>
           <article>
-            <span>Worker-day proxy</span>
-            <strong id="peopleMetric">0.009 day</strong>
-            <small id="peopleMetricSub">not exact headcount</small>
+            <span>Low-wage proxy</span>
+            <strong id="wageMetric">$0.02</strong>
+            <small id="wageMetricSub">reported low-wage equivalent</small>
           </article>
         </section>
 

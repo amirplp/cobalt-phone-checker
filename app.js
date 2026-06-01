@@ -420,8 +420,8 @@ function renderResult(phone, custom = false) {
   ui.batteryBadge.textContent = `${formatNumber(phone.capacity)} mAh`;
   ui.gramsMain.textContent = `${estimate.mid.toFixed(1)}g`;
   ui.gramsRange.textContent = `estimated range: ${estimate.low.toFixed(1)}-${estimate.high.toFixed(1)}g`;
-  ui.cobaltMetric.textContent = `${estimate.mid.toFixed(1)}g`;
-  ui.cobaltMetricSub.textContent = `${estimate.low.toFixed(1)}-${estimate.high.toFixed(1)}g estimated range`;
+  if (ui.cobaltMetric) ui.cobaltMetric.textContent = `${estimate.mid.toFixed(1)}g`;
+  if (ui.cobaltMetricSub) ui.cobaltMetricSub.textContent = `${estimate.low.toFixed(1)}-${estimate.high.toFixed(1)}g estimated range`;
   ui.drcMetric.textContent = `${impact.drc.mid.toFixed(1)}g`;
   ui.labourMetric.textContent = formatDuration(impact.labourMinutes);
   ui.labourMetricSub.textContent = `${(impact.drc.mid * ARTISANAL_SHARE).toFixed(1)}g artisanal-risk cobalt`;
@@ -429,8 +429,8 @@ function renderResult(phone, custom = false) {
   ui.wageMetricSub.textContent = `${formatMoney(impact.wage.low)}-${formatMoney(impact.wage.high)} at $1-$2/day`;
   ui.co2Metric.textContent = `${impact.co2.mid.toFixed(1)}kg`;
   ui.co2MetricSub.textContent = `${impact.co2.low.toFixed(1)}-${impact.co2.high.toFixed(1)}kg CO2e range`;
-  ui.peopleMetric.textContent = formatWorkerDays(impact.workerDays);
-  ui.peopleMetricSub.textContent = "proxy, not exact headcount";
+  if (ui.peopleMetric) ui.peopleMetric.textContent = formatWorkerDays(impact.workerDays);
+  if (ui.peopleMetricSub) ui.peopleMetricSub.textContent = "proxy, not exact headcount";
   ui.riskScore.textContent = `${impact.risk} / 100`;
   ui.riskBar.style.width = `${impact.risk}%`;
   ui.riskText.textContent = impact.risk > 78
@@ -446,11 +446,12 @@ function renderResult(phone, custom = false) {
 function renderLensInsight() {
   if (!currentImpact || !ui.lensInsight) return;
   const model = ui.selectedModel.textContent;
+  const cobaltValue = ui.cobaltMetric?.textContent || ui.gramsMain.textContent;
   const copy = {
-    cobalt: `${model} is estimated at ${ui.cobaltMetric.textContent} of cobalt in the battery, with about ${ui.drcMetric.textContent} linked to the DRC share of global mined cobalt.`,
-    congo: `The Congo score is ${ui.riskScore.textContent}. It connects this battery estimate to a supply chain where the DRC produces most of the world's mined cobalt.`,
-    labour: `${model} shows ${ui.labourMetric.textContent} of labour-risk exposure and ${ui.wageMetric.textContent} of low-wage pressure in this proxy estimate.`,
-    climate: `${model} is estimated at ${ui.co2Metric.textContent} battery production CO2e. The class simulator below shows how fast that footprint scales.`
+    cobalt: `${model}: about ${cobaltValue} of cobalt in the battery. That tiny mass connects the phone in your hand to a global mining chain.`,
+    congo: `${ui.drcMetric.textContent} of this estimate is linked to the DRC share of global mined cobalt. Congo is central to the world's battery supply.`,
+    labour: `${ui.labourMetric.textContent} of labour-risk exposure is a simple proxy for the hidden human pressure behind battery minerals.`,
+    climate: `${ui.co2Metric.textContent} battery CO2e is estimated for the cell. One phone feels small; a whole classroom scales fast.`
   };
   ui.lensInsight.textContent = copy[activeLens] || copy.cobalt;
   ui.lensButtons.forEach((button) => {
@@ -527,7 +528,7 @@ function showResultScreen() {
   ui.pageButtons.forEach((button) => {
     button.classList.toggle("active", button.dataset.pageTarget === "result");
   });
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  window.scrollTo({ top: 0, behavior: "auto" });
 }
 
 function showSearchScreen() {
@@ -537,7 +538,7 @@ function showSearchScreen() {
   ui.pageButtons.forEach((button) => {
     button.classList.toggle("active", button.dataset.pageTarget === "search");
   });
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  window.scrollTo({ top: 0, behavior: "auto" });
   setTimeout(() => ui.modelSearch?.focus(), 120);
 }
 
