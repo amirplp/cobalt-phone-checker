@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Phone Cobalt Checker</title>
+    <meta name="description" content="Search a phone model and estimate cobalt, Congo supply-chain exposure, labour-risk pressure, and battery CO2e." />
+    <meta name="theme-color" content="#213f99" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <section class="scene-wrap" aria-label="Interactive 3D phone preview">
+        <canvas id="phone3d" aria-hidden="true"></canvas>
+        <div class="scene-fallback" aria-hidden="true">
+          <div class="fallback-phone">
+            <div class="fallback-screen"></div>
+            <div class="fallback-battery"></div>
+          </div>
+          <span class="fallback-orbit"></span>
+          <span class="fallback-orbit second"></span>
+        </div>
+        <div class="scene-copy">
+          <p class="tag">Cobalt, Congo & your phone</p>
+          <h2>One phone. A hidden mining trail.</h2>
+          <p>Search a model and the exhibit estimates cobalt, DRC exposure, battery CO2e, and labour-risk pressure.</p>
+          <div class="scene-stats" aria-label="Cobalt context stats">
+            <span><strong>~76%</strong> mined cobalt linked to the DRC</span>
+            <span><strong>657</strong> searchable phone models</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="hero" aria-labelledby="app-title">
+        <p class="tag">Poster QR tool</p>
+        <h1 id="app-title">Check cobalt in your phone</h1>
+        <p class="sub">
+          Search your model, then see an estimate for cobalt, Congo supply-chain exposure, low-wage labour pressure, and battery CO2e.
+        </p>
+      </section>
+
+      <section class="checker" aria-label="Phone cobalt model search">
+        <div class="search-card">
+          <div class="card-title">
+            <div>
+              <p class="tag">Model search</p>
+              <h2>Type your phone model</h2>
+            </div>
+            <span id="modelCount">0 models</span>
+          </div>
+
+          <label class="search-box" for="modelSearch">
+            <span>Search</span>
+            <input id="modelSearch" type="search" autocomplete="off" placeholder="iPhone 15, Samsung A15, Tecno Spark, Oppo..." autofocus />
+          </label>
+
+          <div class="quick-list" id="quickList" aria-label="Matching phone models"></div>
+
+          <div class="manual-box">
+            <h3>If model not found</h3>
+            <label for="batteryInput">Battery capacity, mAh</label>
+            <div class="capacity-row">
+              <input id="batteryInput" type="number" min="1000" max="8000" step="50" value="4500" />
+              <input id="batteryRange" type="range" min="1000" max="8000" step="50" value="4500" />
+            </div>
+          </div>
+        </div>
+
+        <div class="result-card" aria-live="polite">
+          <div class="phone-icon" aria-hidden="true">
+            <div class="speaker"></div>
+            <div class="battery-block">
+              <span>Battery</span>
+              <strong id="batteryBadge">4,422 mAh</strong>
+            </div>
+          </div>
+
+          <div>
+            <p class="tag" id="selectedBrand">Apple</p>
+            <h2 id="selectedModel">iPhone 15 Pro Max</h2>
+            <div class="result-number">
+              <strong id="gramsMain">11.1g</strong>
+              <span id="gramsRange">estimated range: 7.7-14.5g cobalt</span>
+            </div>
+            <p id="modelNote">
+              Estimated from battery capacity and typical cobalt-containing lithium-ion battery chemistry.
+            </p>
+
+            <div class="impact-grid" aria-label="Estimated impact result">
+              <article>
+                <span>Cobalt mass</span>
+                <strong id="cobaltMetric">11.1g</strong>
+                <small id="cobaltMetricSub">battery cathode estimate</small>
+              </article>
+              <article>
+                <span>DRC-linked share</span>
+                <strong id="drcMetric">8.4g</strong>
+                <small>based on global mine share</small>
+              </article>
+              <article>
+                <span>Labour exposure</span>
+                <strong id="labourMetric">7 min</strong>
+                <small id="labourMetricSub">artisanal-risk proxy</small>
+              </article>
+              <article>
+                <span>Wage pressure</span>
+                <strong id="wageMetric">$0.02</strong>
+                <small id="wageMetricSub">reported low-wage equivalent</small>
+              </article>
+              <article>
+                <span>Battery CO2e</span>
+                <strong id="co2Metric">2.1kg</strong>
+                <small id="co2MetricSub">cell production only</small>
+              </article>
+              <article>
+                <span>People affected</span>
+                <strong id="peopleMetric">0.010 day</strong>
+                <small id="peopleMetricSub">risk-weighted worker-day proxy</small>
+              </article>
+            </div>
+
+            <div class="risk-panel">
+              <div>
+                <p class="tag">Congo conflict exposure</p>
+                <h3 id="riskScore">82 / 100</h3>
+              </div>
+              <div class="risk-bar" aria-hidden="true"><span id="riskBar"></span></div>
+              <p id="riskText">Higher battery capacity usually means more cobalt demand and a larger supply-chain risk footprint.</p>
+            </div>
+
+            <div class="action-row">
+              <button id="shareResult" type="button">Share my result</button>
+              <span id="shareStatus" aria-live="polite"></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="scale-panel" aria-label="Class impact simulator">
+        <div class="scale-copy">
+          <p class="tag">Class awareness simulator</p>
+          <h2>What if everyone in the room has a similar phone?</h2>
+          <p>
+            Adjust the number of phones. The totals scale your selected model so students can see the hidden material footprint together.
+          </p>
+        </div>
+        <div class="scale-tool">
+          <label for="phoneCountInput">Phones in the room</label>
+          <div class="capacity-row">
+            <input id="phoneCountInput" type="number" min="1" max="500" step="1" value="30" />
+            <input id="phoneCountRange" type="range" min="1" max="150" step="1" value="30" />
+          </div>
+          <div class="scale-grid">
+            <article>
+              <span>Total cobalt</span>
+              <strong id="classCobalt">333g</strong>
+            </article>
+            <article>
+              <span>DRC-linked cobalt</span>
+              <strong id="classDrc">253g</strong>
+            </article>
+            <article>
+              <span>Battery CO2e</span>
+              <strong id="classCo2">63kg</strong>
+            </article>
+            <article>
+              <span>Labour exposure</span>
+              <strong id="classLabour">3.5h</strong>
+            </article>
+            <article>
+              <span>Low-wage equivalent</span>
+              <strong id="classWage">$0.44</strong>
+            </article>
+            <article>
+              <span>Worker-day pressure</span>
+              <strong id="classPeople">0.29 days</strong>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="story-panel" aria-label="Cobalt and Congo context">
+        <div>
+          <p class="tag">Poster context</p>
+          <h2>Cobalt, Congo, and conflict minerals</h2>
+          <p>
+            Most mined cobalt comes from the Democratic Republic of Congo. Industrial mines, artisanal mining, traders, refiners,
+            battery makers, and phone brands can all sit inside one long supply chain. This checker turns a phone battery into a
+            simple exhibit estimate, not a brand-specific audit.
+          </p>
+        </div>
+        <div class="timeline-strip" aria-label="Cobalt supply chain pathway">
+          <span>DRC mines</span>
+          <span>Traders</span>
+          <span>Refining</span>
+          <span>Battery cell</span>
+          <span>Phone</span>
+        </div>
+      </section>
+
+      <section class="awareness-panel" aria-label="Awareness actions">
+        <p class="tag">What students can take away</p>
+        <div class="awareness-grid">
+          <article>
+            <h2>Keep phones longer</h2>
+            <p>Every extra year reduces demand for newly mined battery minerals.</p>
+          </article>
+          <article>
+            <h2>Repair before replacing</h2>
+            <p>Battery replacement and screen repair can lower the pressure for new devices.</p>
+          </article>
+          <article>
+            <h2>Recycle responsibly</h2>
+            <p>Old phones contain recoverable metals, but they only help if they enter a real recycling stream.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="small-note" aria-label="Estimation basis">
+        <h2>Estimation basis</h2>
+        <p>
+          Cobalt uses battery capacity and a 0.45-0.85g cobalt per Wh range. DRC exposure uses a 76% global mined-cobalt share.
+          Labour and wage pressure are risk-weighted proxies using a 20% artisanal-mining share, 4 worker-minutes per gram of artisanal-risk cobalt,
+          and a low-wage range of $1-$2 per day. Battery CO2e uses 58-92kg CO2e per kWh of lithium-ion cell production.
+        </p>
+        <div class="source-links" aria-label="Source links">
+          <a href="https://data.usgs.gov/datacatalog/data/USGS%3A6797fb00d34ea8c18376e159" target="_blank" rel="noreferrer">USGS cobalt data</a>
+          <a href="https://www.amnesty.org/en/latest/campaigns/2016/06/drc-cobalt-child-labour/" target="_blank" rel="noreferrer">Amnesty DRC mining</a>
+          <a href="https://publica.fraunhofer.de/entities/publication/fc927227-63ec-44e1-bfa7-9db4f2b94866" target="_blank" rel="noreferrer">Battery CO2e study</a>
+        </div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
