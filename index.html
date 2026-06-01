@@ -5,29 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Phone Cobalt Checker</title>
     <meta name="description" content="Search a phone model and estimate cobalt, Congo supply-chain exposure, labour-risk pressure, and battery CO2e." />
-    <meta name="theme-color" content="#213f99" />
+    <meta name="theme-color" content="#15120f" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <main class="app">
-      <section class="scene-wrap" aria-label="Interactive 3D phone preview">
-        <canvas id="phone3d" aria-hidden="true"></canvas>
-        <div class="scene-fallback" aria-hidden="true">
-          <div class="fallback-phone">
-            <div class="fallback-screen"></div>
-            <div class="fallback-battery"></div>
-          </div>
-          <span class="fallback-orbit"></span>
-          <span class="fallback-orbit second"></span>
-        </div>
+      <section class="scene-wrap" aria-label="Interactive phone cobalt exhibit">
+        <img class="hero-photo" src="assets/hero-phone.jpg" alt="A realistic smartphone beside dark mineral rocks" />
+        <div class="hero-shade" aria-hidden="true"></div>
         <div class="scene-copy">
           <p class="tag">Cobalt, Congo & your phone</p>
-          <h2>One phone. A hidden mining trail.</h2>
-          <p>Search a model and the exhibit estimates cobalt, DRC exposure, battery CO2e, and labour-risk pressure.</p>
+          <h2>Scan the hidden cost inside your phone.</h2>
+          <p>Search your model and see a live estimate for cobalt, Congo exposure, wage pressure, labour-risk, and battery emissions.</p>
           <div class="scene-stats" aria-label="Cobalt context stats">
             <span><strong>~76%</strong> mined cobalt linked to the DRC</span>
             <span><strong>657</strong> searchable phone models</span>
           </div>
+          <a class="hero-cta" href="#checker">Start the checker</a>
         </div>
       </section>
 
@@ -39,7 +33,7 @@
         </p>
       </section>
 
-      <section class="checker" aria-label="Phone cobalt model search">
+      <section class="checker" id="checker" aria-label="Phone cobalt model search">
         <div class="search-card">
           <div class="card-title">
             <div>
@@ -55,6 +49,16 @@
           </label>
 
           <div class="quick-list" id="quickList" aria-label="Matching phone models"></div>
+
+          <div class="lens-panel" aria-label="Impact lens selector">
+            <p class="tag">Impact lens</p>
+            <div class="lens-buttons">
+              <button class="lens-button active" type="button" data-lens="cobalt">Cobalt</button>
+              <button class="lens-button" type="button" data-lens="labour">Labour</button>
+              <button class="lens-button" type="button" data-lens="climate">Climate</button>
+            </div>
+            <p id="lensInsight">Cobalt estimate updates when you select a model.</p>
+          </div>
 
           <div class="manual-box">
             <h3>If model not found</h3>

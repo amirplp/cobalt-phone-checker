@@ -29,5 +29,5 @@ Use that URL to generate the QR code for the poster.
 
 - No backend is needed.
 - No database is needed.
-- The 3D phone scene loads Three.js from a CDN. If that fails on a visitor phone, the built-in animated fallback still appears.
+- The site uses a local hero image, so the main visual does not depend on a third-party image link.
 - The estimates are educational proxies, not a verified audit of a specific phone brand.

@@ -314,6 +314,8 @@ const ui = {
   riskText: document.querySelector("#riskText"),
   shareResult: document.querySelector("#shareResult"),
   shareStatus: document.querySelector("#shareStatus"),
+  lensInsight: document.querySelector("#lensInsight"),
+  lensButtons: document.querySelectorAll(".lens-button"),
   phoneCountInput: document.querySelector("#phoneCountInput"),
   phoneCountRange: document.querySelector("#phoneCountRange"),
   classCobalt: document.querySelector("#classCobalt"),
@@ -321,14 +323,12 @@ const ui = {
   classCo2: document.querySelector("#classCo2"),
   classLabour: document.querySelector("#classLabour"),
   classWage: document.querySelector("#classWage"),
-  classPeople: document.querySelector("#classPeople"),
-  phone3d: document.querySelector("#phone3d"),
-  sceneWrap: document.querySelector(".scene-wrap")
+  classPeople: document.querySelector("#classPeople")
 };
 
 let activePhone = phones.find((phone) => phone.model === "iPhone 15 Pro Max") || phones[0];
-let threeState = null;
 let currentImpact = null;
+let activeLens = "cobalt";
 
 const DRC_COBALT_SHARE = 0.76;
 const ARTISANAL_SHARE = 0.2;
@@ -433,8 +433,22 @@ function renderResult(phone, custom = false) {
   ui.modelNote.textContent = custom
     ? "This uses battery size only. It is useful when an exact phone model is missing or the battery has been replaced."
     : "Estimate based on battery capacity and typical cobalt-containing lithium-ion cathode ranges. Exact cobalt content varies by chemistry and supplier.";
-  updateThreeBattery(estimate);
+  renderLensInsight();
   renderClassScale();
+}
+
+function renderLensInsight() {
+  if (!currentImpact || !ui.lensInsight) return;
+  const model = ui.selectedModel.textContent;
+  const copy = {
+    cobalt: `${model} is estimated at ${ui.cobaltMetric.textContent} of cobalt in the battery, with about ${ui.drcMetric.textContent} linked to the DRC share of global mined cobalt.`,
+    labour: `${model} shows ${ui.labourMetric.textContent} of labour-risk exposure and ${ui.wageMetric.textContent} of low-wage pressure in this proxy estimate.`,
+    climate: `${model} is estimated at ${ui.co2Metric.textContent} battery production CO2e. The class simulator below shows how fast that footprint scales.`
+  };
+  ui.lensInsight.textContent = copy[activeLens] || copy.cobalt;
+  ui.lensButtons.forEach((button) => {
+    button.classList.toggle("active", button.dataset.lens === activeLens);
+  });
 }
 
 function renderList(query = "") {
@@ -488,206 +502,6 @@ function renderList(query = "") {
         <em>mAh</em>
       </button>
     `;
-  }
-}
-
-function updateThreeBattery(estimate) {
-  if (!threeState) return;
-  const ratio = Math.min(1, Math.max(0.18, estimate.mid / 14));
-  threeState.batteryFill.scale.y = ratio;
-  threeState.batteryFill.position.y = -0.45 + (ratio * 0.55);
-  threeState.batteryGlow.intensity = 0.45 + (ratio * 1.4);
-  threeState.particles.material.size = 0.045 + (ratio * 0.018);
-}
-
-async function initThreeScene() {
-  if (!ui.phone3d || typeof ui.phone3d.getContext !== "function") return;
-
-  try {
-    const THREE = await import("https://unpkg.com/three@0.165.0/build/three.module.js");
-    const renderer = new THREE.WebGLRenderer({
-      canvas: ui.phone3d,
-      antialias: true,
-      alpha: true
-    });
-    renderer.setClearColor(0x000000, 0);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
-    camera.position.set(0, 0.25, 7.2);
-
-    const phoneGroup = new THREE.Group();
-    phoneGroup.rotation.set(-0.3, 0.52, -0.13);
-    scene.add(phoneGroup);
-
-    const body = new THREE.Mesh(
-      new THREE.BoxGeometry(2.05, 4.2, 0.22, 4, 8, 1),
-      new THREE.MeshStandardMaterial({
-        color: 0x111827,
-        metalness: 0.55,
-        roughness: 0.3
-      })
-    );
-    phoneGroup.add(body);
-
-    const screen = new THREE.Mesh(
-      new THREE.BoxGeometry(1.78, 3.72, 0.05),
-      new THREE.MeshStandardMaterial({
-        color: 0x14214a,
-        metalness: 0.15,
-        roughness: 0.28,
-        emissive: 0x102969,
-        emissiveIntensity: 0.4
-      })
-    );
-    screen.position.z = 0.15;
-    phoneGroup.add(screen);
-
-    const speaker = new THREE.Mesh(
-      new THREE.BoxGeometry(0.48, 0.055, 0.06),
-      new THREE.MeshStandardMaterial({ color: 0x020617, roughness: 0.55 })
-    );
-    speaker.position.set(0, 1.72, 0.2);
-    phoneGroup.add(speaker);
-
-    const batteryShell = new THREE.Mesh(
-      new THREE.BoxGeometry(0.86, 1.34, 0.08),
-      new THREE.MeshStandardMaterial({
-        color: 0xffffff,
-        transparent: true,
-        opacity: 0.32,
-        metalness: 0.15,
-        roughness: 0.22
-      })
-    );
-    batteryShell.position.set(0, -0.16, 0.23);
-    phoneGroup.add(batteryShell);
-
-    const batteryFill = new THREE.Mesh(
-      new THREE.BoxGeometry(0.66, 1.06, 0.11),
-      new THREE.MeshStandardMaterial({
-        color: 0xf2c316,
-        emissive: 0xb36b00,
-        emissiveIntensity: 0.55,
-        metalness: 0.08,
-        roughness: 0.26
-      })
-    );
-    batteryFill.position.set(0, 0.05, 0.31);
-    phoneGroup.add(batteryFill);
-
-    const cameraLens = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.17, 0.17, 0.05, 32),
-      new THREE.MeshStandardMaterial({
-        color: 0x0b1021,
-        metalness: 0.4,
-        roughness: 0.18
-      })
-    );
-    cameraLens.rotation.x = Math.PI / 2;
-    cameraLens.position.set(-0.62, 1.42, 0.22);
-    phoneGroup.add(cameraLens);
-
-    const particleGeometry = new THREE.BufferGeometry();
-    const particlePositions = [];
-    for (let index = 0; index < 110; index += 1) {
-      const angle = index * 0.58;
-      const radius = 2.15 + ((index % 9) * 0.045);
-      particlePositions.push(
-        Math.cos(angle) * radius,
-        Math.sin(index * 0.31) * 1.7,
-        Math.sin(angle) * 0.75
-      );
-    }
-    particleGeometry.setAttribute("position", new THREE.Float32BufferAttribute(particlePositions, 3));
-
-    const particles = new THREE.Points(
-      particleGeometry,
-      new THREE.PointsMaterial({
-        color: 0xf2c316,
-        size: 0.055,
-        transparent: true,
-        opacity: 0.85
-      })
-    );
-    scene.add(particles);
-
-    const outerRing = new THREE.Mesh(
-      new THREE.TorusGeometry(2.58, 0.012, 8, 160),
-      new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.42 })
-    );
-    outerRing.rotation.set(Math.PI / 2.4, 0.45, 0.2);
-    scene.add(outerRing);
-
-    const goldRing = new THREE.Mesh(
-      new THREE.TorusGeometry(1.72, 0.018, 8, 160),
-      new THREE.MeshBasicMaterial({ color: 0xf2c316, transparent: true, opacity: 0.72 })
-    );
-    goldRing.rotation.set(Math.PI / 2.2, -0.24, -0.36);
-    scene.add(goldRing);
-
-    scene.add(new THREE.AmbientLight(0xffffff, 1.1));
-    const keyLight = new THREE.DirectionalLight(0xffffff, 2.2);
-    keyLight.position.set(2, 4, 5);
-    scene.add(keyLight);
-
-    const batteryGlow = new THREE.PointLight(0xf2c316, 1.25, 5);
-    batteryGlow.position.set(0, 0, 1.25);
-    phoneGroup.add(batteryGlow);
-
-    const pointer = { x: 0, y: 0 };
-    const setPointer = (event) => {
-      const rect = ui.phone3d.getBoundingClientRect();
-      pointer.x = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
-      pointer.y = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
-    };
-
-    ui.phone3d.addEventListener("pointermove", setPointer);
-    ui.phone3d.addEventListener("pointerdown", () => ui.phone3d.classList.add("is-dragging"));
-    ui.phone3d.addEventListener("pointerup", () => ui.phone3d.classList.remove("is-dragging"));
-    ui.phone3d.addEventListener("pointerleave", () => {
-      ui.phone3d.classList.remove("is-dragging");
-      pointer.x = 0;
-      pointer.y = 0;
-    });
-
-    const resize = () => {
-      const width = ui.phone3d.clientWidth || 1;
-      const height = ui.phone3d.clientHeight || 1;
-      renderer.setSize(width, height, false);
-      camera.aspect = width / height;
-      camera.updateProjectionMatrix();
-    };
-
-    if ("ResizeObserver" in window) {
-      new ResizeObserver(resize).observe(ui.phone3d);
-    } else {
-      window.addEventListener("resize", resize);
-    }
-    resize();
-
-    threeState = { batteryFill, batteryGlow, particles };
-    ui.phone3d.classList.add("is-live");
-    ui.sceneWrap?.classList.add("is-three-live");
-    updateThreeBattery(estimateCobalt(activePhone.capacity));
-
-    const animate = () => {
-      const time = performance.now() * 0.001;
-      phoneGroup.rotation.x += ((-0.32 + (pointer.y * 0.2) + Math.sin(time * 1.2) * 0.025) - phoneGroup.rotation.x) * 0.06;
-      phoneGroup.rotation.y += ((0.52 + pointer.x * 0.42) - phoneGroup.rotation.y) * 0.06;
-      phoneGroup.rotation.z += ((-0.13 + pointer.x * 0.08) - phoneGroup.rotation.z) * 0.06;
-      particles.rotation.y = time * 0.2;
-      particles.rotation.z = time * 0.09;
-      outerRing.rotation.z = time * 0.18;
-      goldRing.rotation.z = -time * 0.24;
-      renderer.render(scene, camera);
-      requestAnimationFrame(animate);
-    };
-    animate();
-  } catch (error) {
-    ui.phone3d.classList.remove("is-live");
-    ui.sceneWrap?.classList.remove("is-three-live");
   }
 }
 
@@ -770,8 +584,13 @@ ui.batteryRange.addEventListener("input", () => syncCustomCapacity(ui.batteryRan
 ui.phoneCountInput?.addEventListener("input", () => syncPhoneCount(ui.phoneCountInput.value));
 ui.phoneCountRange?.addEventListener("input", () => syncPhoneCount(ui.phoneCountRange.value));
 ui.shareResult?.addEventListener("click", shareCurrentResult);
+ui.lensButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    activeLens = button.dataset.lens || "cobalt";
+    renderLensInsight();
+  });
+});
 
 ui.modelCount.textContent = `${phones.length}+ models`;
 renderList();
 renderResult(activePhone);
-initThreeScene();

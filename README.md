@@ -9,7 +9,7 @@ Open `index.html` in a browser. Visitors can:
 - scale the selected phone to a whole classroom of phones
 - share/copy a personal result
 - use battery capacity if their model is missing
-- see an interactive 3D phone preview when internet access allows the 3D library to load
+- see a realistic phone-and-minerals hero image with an exhibit-style interface
 
 This folder is standalone and can be uploaded anywhere.
 
