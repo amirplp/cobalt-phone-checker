@@ -81,6 +81,44 @@ button {
   text-transform: uppercase;
 }
 
+.page-switch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 250, 242, 0.78);
+  padding: 5px;
+}
+
+.page-switch button {
+  min-height: 38px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 900;
+}
+
+.page-switch button.active {
+  background: var(--ink);
+  color: var(--cream);
+}
+
+.page-switch.dark {
+  border-color: rgba(255, 246, 230, 0.16);
+  background: rgba(255, 246, 230, 0.08);
+}
+
+.page-switch.dark button {
+  color: rgba(255, 246, 230, 0.72);
+}
+
+.page-switch.dark button.active {
+  background: var(--amber);
+  color: var(--ink);
+}
+
 h1,
 h2,
 h3,
@@ -257,8 +295,7 @@ input[type="range"] {
 
 .primary-action,
 .manual-box button,
-.action-row button,
-.back-button {
+.action-row button {
   min-height: 46px;
   border: 0;
   border-radius: 999px;
@@ -280,12 +317,6 @@ input[type="range"] {
 .manual-box button {
   width: 100%;
   margin-top: 12px;
-}
-
-.back-button {
-  width: fit-content;
-  background: rgba(21, 18, 15, 0.08);
-  color: var(--ink);
 }
 
 .result-screen {

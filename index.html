@@ -15,6 +15,11 @@
           <img src="assets/hero-phone.jpg" alt="A realistic smartphone beside dark mineral rocks" />
         </div>
 
+        <nav class="page-switch" aria-label="Two page navigation">
+          <button class="active" type="button" data-page-target="search">Search</button>
+          <button type="button" data-page-target="result">Result</button>
+        </nav>
+
         <p class="tag">Page 1 of 2</p>
         <h1 id="start-title">What is the cobalt cost of your phone?</h1>
         <p class="lead">
@@ -52,7 +57,10 @@
       </section>
 
       <section class="screen result-screen" id="resultScreen" aria-labelledby="result-title" hidden>
-        <button class="back-button" id="backToSearch" type="button">Change phone</button>
+        <nav class="page-switch dark" aria-label="Two page navigation">
+          <button type="button" data-page-target="search">Search again</button>
+          <button class="active" type="button" data-page-target="result">Result</button>
+        </nav>
 
         <p class="tag">Page 2 of 2</p>
         <p class="brand-line" id="selectedBrand">Apple</p>

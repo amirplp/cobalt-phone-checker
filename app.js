@@ -289,9 +289,9 @@ const phones = [...phoneMap.values()].sort((a, b) =>
 const ui = {
   startScreen: document.querySelector("#startScreen"),
   resultScreen: document.querySelector("#resultScreen"),
-  backToSearch: document.querySelector("#backToSearch"),
   goResult: document.querySelector("#goResult"),
   customEstimate: document.querySelector("#customEstimate"),
+  pageButtons: document.querySelectorAll("[data-page-target]"),
   modelSearch: document.querySelector("#modelSearch"),
   quickList: document.querySelector("#quickList"),
   batteryInput: document.querySelector("#batteryInput"),
@@ -514,6 +514,9 @@ function showResultScreen() {
   if (!ui.startScreen || !ui.resultScreen) return;
   ui.startScreen.hidden = true;
   ui.resultScreen.hidden = false;
+  ui.pageButtons.forEach((button) => {
+    button.classList.toggle("active", button.dataset.pageTarget === "result");
+  });
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
@@ -521,6 +524,9 @@ function showSearchScreen() {
   if (!ui.startScreen || !ui.resultScreen) return;
   ui.resultScreen.hidden = true;
   ui.startScreen.hidden = false;
+  ui.pageButtons.forEach((button) => {
+    button.classList.toggle("active", button.dataset.pageTarget === "search");
+  });
   window.scrollTo({ top: 0, behavior: "smooth" });
   setTimeout(() => ui.modelSearch?.focus(), 120);
 }
@@ -607,10 +613,18 @@ ui.phoneCountInput?.addEventListener("input", () => syncPhoneCount(ui.phoneCount
 ui.phoneCountRange?.addEventListener("input", () => syncPhoneCount(ui.phoneCountRange.value));
 ui.shareResult?.addEventListener("click", shareCurrentResult);
 ui.goResult?.addEventListener("click", showResultScreen);
-ui.backToSearch?.addEventListener("click", showSearchScreen);
 ui.customEstimate?.addEventListener("click", () => {
   syncCustomCapacity(ui.batteryInput.value);
   showResultScreen();
+});
+ui.pageButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    if (button.dataset.pageTarget === "search") {
+      showSearchScreen();
+    } else {
+      showResultScreen();
+    }
+  });
 });
 ui.lensButtons.forEach((button) => {
   button.addEventListener("click", () => {
