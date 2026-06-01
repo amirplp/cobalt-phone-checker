@@ -287,6 +287,11 @@ const phones = [...phoneMap.values()].sort((a, b) =>
 );
 
 const ui = {
+  startScreen: document.querySelector("#startScreen"),
+  resultScreen: document.querySelector("#resultScreen"),
+  backToSearch: document.querySelector("#backToSearch"),
+  goResult: document.querySelector("#goResult"),
+  customEstimate: document.querySelector("#customEstimate"),
   modelSearch: document.querySelector("#modelSearch"),
   quickList: document.querySelector("#quickList"),
   batteryInput: document.querySelector("#batteryInput"),
@@ -505,11 +510,27 @@ function renderList(query = "") {
   }
 }
 
+function showResultScreen() {
+  if (!ui.startScreen || !ui.resultScreen) return;
+  ui.startScreen.hidden = true;
+  ui.resultScreen.hidden = false;
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function showSearchScreen() {
+  if (!ui.startScreen || !ui.resultScreen) return;
+  ui.resultScreen.hidden = true;
+  ui.startScreen.hidden = false;
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  setTimeout(() => ui.modelSearch?.focus(), 120);
+}
+
 ui.quickList.addEventListener("click", (event) => {
   const button = event.target.closest("button");
   if (!button) return;
   if (button.dataset.custom) {
     renderResult({ capacity: Number(ui.batteryInput.value) }, true);
+    showResultScreen();
     return;
   }
   const next = phones.find((phone) => phone.key === button.dataset.key);
@@ -520,6 +541,7 @@ ui.quickList.addEventListener("click", (event) => {
   ui.batteryRange.value = next.capacity;
   renderList(ui.modelSearch.value);
   renderResult(next);
+  showResultScreen();
 });
 
 ui.modelSearch.addEventListener("input", () => {
@@ -584,6 +606,12 @@ ui.batteryRange.addEventListener("input", () => syncCustomCapacity(ui.batteryRan
 ui.phoneCountInput?.addEventListener("input", () => syncPhoneCount(ui.phoneCountInput.value));
 ui.phoneCountRange?.addEventListener("input", () => syncPhoneCount(ui.phoneCountRange.value));
 ui.shareResult?.addEventListener("click", shareCurrentResult);
+ui.goResult?.addEventListener("click", showResultScreen);
+ui.backToSearch?.addEventListener("click", showSearchScreen);
+ui.customEstimate?.addEventListener("click", () => {
+  syncCustomCapacity(ui.batteryInput.value);
+  showResultScreen();
+});
 ui.lensButtons.forEach((button) => {
   button.addEventListener("click", () => {
     activeLens = button.dataset.lens || "cobalt";

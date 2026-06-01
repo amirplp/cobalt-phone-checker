@@ -1,12 +1,13 @@
 # Phone Cobalt Checker
 
-Simple standalone HTML app for the poster QR. It is ready for GitHub Pages.
+Simple two-screen HTML app for the poster QR. It is ready for GitHub Pages.
 
 Open `index.html` in a browser. Visitors can:
 
 - search 650+ common Pakistan-market phone models
-- see estimated cobalt, DRC-linked cobalt exposure, battery CO2e, and labour-risk pressure
-- scale the selected phone to a whole classroom of phones
+- tap a model and jump straight to a simple impact page
+- see estimated cobalt, Congo-linked cobalt exposure, battery CO2e, wage pressure, and labour-risk pressure
+- scale the selected phone to a whole classroom of phones on the result page
 - share/copy a personal result
 - use battery capacity if their model is missing
 - see a realistic phone-and-minerals hero image with an exhibit-style interface
