@@ -3,20 +3,17 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>What's in your phone? · Cobalt × Congo</title>
-    <meta name="description" content="Scan. Search your model. See how much cobalt is in your phone — and what it means for the Democratic Republic of Congo." />
-    <meta name="theme-color" content="#0a1230" />
+    <title>What's in your phone? · Cobalt &amp; the Congo</title>
+    <meta name="description" content="Scan. Search your model. See how much cobalt is in your phone — and how it connects to conflict in the Democratic Republic of Congo." />
+    <meta name="theme-color" content="#f4f1ea" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=4" />
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css?v=5" />
   </head>
   <body>
-    <div class="bg-particles" aria-hidden="true"></div>
-    <div class="bg-glow" aria-hidden="true"></div>
-
     <main class="app">
-      <!-- ========== INTRO / SEARCH ========== -->
+      <!-- ========== DISCOVER / SEARCH ========== -->
       <section class="screen start-screen" id="startScreen" aria-labelledby="start-title">
         <header class="top-bar">
           <div class="logo">
@@ -24,48 +21,29 @@
             <span>COBALT · CONGO · YOUR PHONE</span>
           </div>
           <nav class="page-switch" aria-label="Two page navigation">
-            <button class="active" type="button" data-page-target="search">1 · Discover</button>
-            <button type="button" data-page-target="result" disabled>2 · Impact</button>
+            <button class="active" type="button" data-page-target="search">Discover</button>
+            <button type="button" data-page-target="result" disabled>Impact</button>
           </nav>
         </header>
 
         <section class="hero">
-          <div class="hero-crystal" aria-hidden="true">
-            <svg viewBox="0 0 200 200" class="crystal-svg">
-              <defs>
-                <radialGradient id="crystalGrad" cx="35%" cy="30%">
-                  <stop offset="0%" stop-color="#ffd065" />
-                  <stop offset="55%" stop-color="#f5b829" />
-                  <stop offset="100%" stop-color="#7a4a10" />
-                </radialGradient>
-                <radialGradient id="crystalGlow" cx="50%" cy="50%">
-                  <stop offset="0%" stop-color="rgba(245,184,41,0.55)" />
-                  <stop offset="100%" stop-color="rgba(245,184,41,0)" />
-                </radialGradient>
-              </defs>
-              <circle cx="100" cy="100" r="95" fill="url(#crystalGlow)" />
-              <polygon points="100,18 162,70 138,170 62,170 38,70" fill="url(#crystalGrad)" stroke="#ffd065" stroke-width="1.4" stroke-linejoin="round"/>
-              <polyline points="100,18 100,170" stroke="#fff" stroke-opacity="0.18" stroke-width="1"/>
-              <polyline points="38,70 100,90 162,70" stroke="#fff" stroke-opacity="0.18" stroke-width="1"/>
-              <polyline points="100,90 62,170" stroke="#fff" stroke-opacity="0.18" stroke-width="1"/>
-              <polyline points="100,90 138,170" stroke="#fff" stroke-opacity="0.18" stroke-width="1"/>
-            </svg>
-            <div class="ring ring-a"></div>
-            <div class="ring ring-b"></div>
-          </div>
+          <figure class="hero-photo">
+            <img src="assets/hero-phone.jpg" alt="A smartphone with its cobalt-bearing chip exposed, resting beside raw cobalt ore" loading="eager" />
+            <figcaption>Inside every phone: a few grams of cobalt — most of it from one country.</figcaption>
+          </figure>
 
           <p class="kicker">A live awareness experiment</p>
           <h1 id="start-title">
-            What's the <em>cobalt cost</em><br/>of the phone in <em>your hand</em>?
+            What's the <em>cobalt cost</em> of the phone in <em>your hand</em>?
           </h1>
           <p class="lead">
-            Search your model. In one tap you'll see the cobalt inside, its link to the Democratic Republic of Congo, the labour pressure, the wages, and the carbon behind your battery.
+            Search your model. In one tap, see the cobalt inside it — and how that tiny mass connects you to conflict, labour, and the Democratic Republic of Congo.
           </p>
 
           <div class="hero-stats">
-            <div><strong data-countup="76" data-suffix="%">0%</strong><span>of world's cobalt mined in DRC</span></div>
-            <div><strong data-countup="255" data-suffix="K+">0</strong><span>artisanal miners</span></div>
-            <div><strong data-prefix="$" data-countup="2" data-suffix="/day">$0</strong><span>typical artisanal wage</span></div>
+            <div><strong data-countup="76" data-suffix="%">0%</strong><span>of the world's cobalt is mined in the DRC</span></div>
+            <div><strong data-countup="255" data-suffix="K+">0</strong><span>artisanal miners, many by hand</span></div>
+            <div><strong data-prefix="$" data-countup="2" data-suffix="/day">$0</strong><span>a typical artisanal wage</span></div>
           </div>
         </section>
 
@@ -101,19 +79,19 @@
 
         <button class="primary-action" id="goResult" type="button" disabled>Search a model first</button>
 
-        <p class="footnote">Created by <strong>Aamir Hayat, Kashaf Baloch &amp; Tehreem Fatima</strong> · Poster companion · 2026</p>
+        <p class="footnote">By <strong>Aamir Hayat, Kashaf Baloch &amp; Tehreem Fatima</strong> · Poster companion · 2026</p>
       </section>
 
-      <!-- ========== RESULT ========== -->
+      <!-- ========== IMPACT / RESULT ========== -->
       <section class="screen result-screen" id="resultScreen" aria-labelledby="result-title" hidden>
-        <header class="top-bar dark">
+        <header class="top-bar">
           <div class="logo">
             <span class="dot"></span>
             <span>YOUR PHONE · YOUR FOOTPRINT</span>
           </div>
-          <nav class="page-switch dark" aria-label="Two page navigation">
-            <button type="button" data-page-target="search">1 · Discover</button>
-            <button class="active" type="button" data-page-target="result">2 · Impact</button>
+          <nav class="page-switch" aria-label="Two page navigation">
+            <button type="button" data-page-target="search">Discover</button>
+            <button class="active" type="button" data-page-target="result">Impact</button>
           </nav>
         </header>
 
@@ -123,145 +101,75 @@
           <p class="battery-line">Battery <strong id="batteryBadge">4,422 mAh</strong></p>
         </section>
 
+        <!-- BIG NUMBER -->
         <section class="impact-hero reveal" aria-live="polite">
-          <div class="impact-visual" aria-hidden="true">
-            <div class="crystal-pile" id="crystalPile"></div>
-          </div>
-          <div class="impact-text">
-            <span class="impact-label">Cobalt inside your phone</span>
-            <strong id="gramsMain" class="impact-number">11.1<small>g</small></strong>
-            <em id="gramsRange">estimated range 7.7 – 14.5 g</em>
-            <p class="impact-equivalent" id="gramsEquivalent">≈ the weight of 2 sugar cubes — invisible in your pocket, heavy on a continent.</p>
-          </div>
+          <span class="impact-label">Cobalt inside your phone</span>
+          <strong id="gramsMain" class="impact-number"><span id="gramsValue">11.1</span><small>g</small></strong>
+          <em id="gramsRange">estimated range 7.7 – 14.5 g</em>
+          <p class="impact-equivalent" id="gramsEquivalent">≈ the weight of 2 sugar cubes — invisible in your pocket, heavy on a continent.</p>
         </section>
 
         <p class="note reveal" id="modelNote">
           Estimated from battery capacity using typical lithium-ion cathode chemistry.
         </p>
 
-        <!-- LENS STORY SWITCHER -->
-        <section class="lens-panel reveal" aria-label="Interactive impact lens">
-          <p class="tag">Choose a lens</p>
+        <!-- CONGO CONNECTION -->
+        <section class="congo-panel reveal" aria-label="The Congo connection">
+          <p class="tag tag-red">The Congo connection</p>
+          <h2>Most of this cobalt traces back to the&nbsp;DRC.</h2>
+          <p class="congo-text">
+            About <strong>76%</strong> of the world's cobalt is mined in the Democratic Republic of Congo. Control over those mines funds armed groups and fuels a decades-long conflict. The cobalt in your battery is part of that demand.
+          </p>
+          <div class="congo-figures">
+            <div>
+              <span>Congo-linked cobalt</span>
+              <strong id="drcMetric">8.4g</strong>
+            </div>
+            <div>
+              <span>Conflict-exposure score</span>
+              <strong id="riskScore">82 / 100</strong>
+            </div>
+          </div>
+          <div class="risk-bar" aria-hidden="true"><span id="riskBar"></span></div>
+          <p id="riskText" class="risk-text">Higher battery capacity usually means more cobalt demand and a larger conflict-exposure footprint.</p>
+        </section>
+
+        <!-- LENS SWITCHER -->
+        <section class="lens-panel reveal" aria-label="Look closer">
+          <p class="tag">Look closer — tap one</p>
           <div class="lens-buttons">
-            <button class="lens-button active" type="button" data-lens="cobalt">
-              <span class="lens-emoji">🪨</span>Cobalt
-            </button>
-            <button class="lens-button" type="button" data-lens="congo">
-              <span class="lens-emoji">🌍</span>Congo
-            </button>
-            <button class="lens-button" type="button" data-lens="labour">
-              <span class="lens-emoji">⛏️</span>Labour
-            </button>
-            <button class="lens-button" type="button" data-lens="climate">
-              <span class="lens-emoji">🌡️</span>Climate
-            </button>
+            <button class="lens-button active" type="button" data-lens="cobalt">Cobalt</button>
+            <button class="lens-button" type="button" data-lens="congo">Congo</button>
+            <button class="lens-button" type="button" data-lens="labour">Labour</button>
+            <button class="lens-button" type="button" data-lens="climate">Climate</button>
           </div>
           <p id="lensInsight" class="lens-insight">
-            Your phone's battery links you to a global mining chain that starts deep underground in Central Africa.
+            Your phone's battery links you to a mining chain that starts deep underground in Central Africa.
           </p>
         </section>
 
-        <!-- DRC FLOW MAP -->
-        <section class="flow-panel reveal" aria-label="DRC supply chain flow">
-          <p class="tag">Supply chain flow</p>
-          <h2>From the DRC<br/>to your pocket</h2>
-          <div class="flow-graphic" aria-hidden="true">
-            <svg viewBox="0 0 360 200" class="flow-svg" preserveAspectRatio="xMidYMid meet">
-              <defs>
-                <linearGradient id="flowGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stop-color="#f5b829"/>
-                  <stop offset="100%" stop-color="#d96b3d"/>
-                </linearGradient>
-              </defs>
-              <!-- DRC blob -->
-              <g class="flow-node node-drc">
-                <circle cx="50" cy="100" r="36" fill="rgba(245,184,41,0.12)" stroke="#f5b829" stroke-width="1.4"/>
-                <path d="M30 92 q8 -14 22 -10 q14 -2 18 12 q4 12 -8 20 q-12 8 -22 4 q-12 -4 -10 -26 z" fill="#f5b829" opacity="0.85"/>
-                <text x="50" y="155" text-anchor="middle" fill="#fff6e6" font-size="11" font-weight="800" letter-spacing="1.2">DRC MINE</text>
-              </g>
-              <!-- Path -->
-              <path id="flowPath" d="M86 100 C 140 60, 200 140, 270 100" stroke="rgba(255,246,230,0.18)" stroke-width="2" stroke-dasharray="4 6" fill="none"/>
-              <!-- Refinery -->
-              <g class="flow-node node-ref">
-                <circle cx="178" cy="100" r="22" fill="rgba(217,107,61,0.15)" stroke="#d96b3d" stroke-width="1.4"/>
-                <rect x="168" y="92" width="20" height="16" fill="#d96b3d"/>
-                <rect x="172" y="84" width="3" height="10" fill="#d96b3d"/>
-                <rect x="180" y="80" width="3" height="14" fill="#d96b3d"/>
-                <text x="178" y="142" text-anchor="middle" fill="#fff6e6" font-size="10" font-weight="800" letter-spacing="1.2">REFINERY</text>
-              </g>
-              <!-- Phone -->
-              <g class="flow-node node-phone">
-                <circle cx="306" cy="100" r="32" fill="rgba(255,246,230,0.08)" stroke="#fff6e6" stroke-width="1.4"/>
-                <rect x="295" y="80" width="22" height="40" rx="4" fill="#fff6e6"/>
-                <rect x="298" y="84" width="16" height="28" fill="#0f1b3d"/>
-                <circle cx="306" cy="116" r="1.5" fill="#0f1b3d"/>
-                <text x="306" y="155" text-anchor="middle" fill="#fff6e6" font-size="11" font-weight="800" letter-spacing="1.2">YOUR PHONE</text>
-              </g>
-              <!-- Moving particles -->
-              <circle r="3" fill="url(#flowGrad)" class="flow-particle p1"><animateMotion dur="3.6s" repeatCount="indefinite" rotate="auto"><mpath href="#flowPath"/></animateMotion></circle>
-              <circle r="2.5" fill="#f5b829" class="flow-particle p2"><animateMotion dur="3.6s" begin="1.2s" repeatCount="indefinite"><mpath href="#flowPath"/></animateMotion></circle>
-              <circle r="2.5" fill="#d96b3d" class="flow-particle p3"><animateMotion dur="3.6s" begin="2.4s" repeatCount="indefinite"><mpath href="#flowPath"/></animateMotion></circle>
-            </svg>
-          </div>
-          <div class="flow-grid">
-            <article><span>Congo-linked cobalt</span><strong id="drcMetric">8.4g</strong></article>
-            <article><span>Congo exposure</span><strong id="riskScore">82 / 100</strong></article>
-          </div>
-          <div class="risk-bar" aria-hidden="true"><span id="riskBar"></span></div>
-          <p id="riskText" class="risk-text">Higher battery capacity usually means more cobalt demand and a larger supply-chain risk footprint.</p>
-        </section>
-
-        <!-- IMPACT GRID -->
-        <section class="impact-list reveal" aria-label="Estimated impact result">
-          <article class="impact-card card-labour">
-            <span class="card-icon">⛏️</span>
+        <!-- THREE AWARENESS STATS -->
+        <section class="stat-row reveal" aria-label="Other awareness numbers">
+          <article>
             <span>Artisanal labour</span>
             <strong id="labourMetric">7 min</strong>
             <small id="labourMetricSub">artisanal-risk proxy</small>
           </article>
-          <article class="impact-card card-climate">
-            <span class="card-icon">🌡️</span>
+          <article>
             <span>Battery CO₂e</span>
             <strong id="co2Metric">1.3kg</strong>
             <small id="co2MetricSub">cell production only</small>
           </article>
-          <article class="impact-card card-wage">
-            <span class="card-icon">💵</span>
+          <article>
             <span>Low-wage proxy</span>
             <strong id="wageMetric">$0.02</strong>
-            <small id="wageMetricSub">at $1-$2/day artisanal</small>
-          </article>
-          <article class="impact-card card-cobalt">
-            <span class="card-icon">🪨</span>
-            <span>Cobalt total</span>
-            <strong id="cobaltMetric">11.1g</strong>
-            <small id="cobaltMetricSub">range 7.7-14.5g</small>
+            <small id="wageMetricSub">at $1–$2 / day</small>
           </article>
         </section>
 
-        <!-- SHOCK FACT CAROUSEL -->
-        <section class="shock-strip reveal" aria-label="Awareness facts">
-          <article class="shock-card">
-            <strong>76<small>%</small></strong>
-            <p>of the world's mined cobalt comes from the Democratic Republic of Congo (USGS, 2025).</p>
-          </article>
-          <article class="shock-card amber">
-            <strong>25-40<small>K</small></strong>
-            <p>children are estimated to work in artisanal cobalt mines.</p>
-          </article>
-          <article class="shock-card copper">
-            <strong>15<small>/19</small></strong>
-            <p>industrial cobalt mines in the DRC are owned or financed by Chinese entities.</p>
-          </article>
-          <article class="shock-card">
-            <strong>60<small>%</small></strong>
-            <p>projected growth in global cobalt demand by 2030 — your next phone is part of this.</p>
-          </article>
-        </section>
-
-        <!-- CLASS SCALE -->
+        <!-- MULTIPLY THE ROOM -->
         <section class="class-panel reveal">
-          <p class="tag">Now multiply</p>
+          <p class="tag">Now multiply it</p>
           <h2>If everyone in the room scanned…</h2>
           <label for="phoneCountInput">Phones in the room</label>
           <div class="capacity-row">
@@ -281,13 +189,9 @@
 
         <!-- TAKEAWAY -->
         <section class="takeaway-panel reveal">
-          <p class="tag">What you can do</p>
-          <h2>Keep, repair, recycle.</h2>
-          <ul class="takeaway-list">
-            <li><span>🔧</span>Repair before replacing — every extra year cuts new-mine pressure.</li>
-            <li><span>♻️</span>Recycle the old device responsibly — cobalt can re-enter the supply chain.</li>
-            <li><span>📣</span>Ask brands for traceable, audited cobalt — demand creates the pressure.</li>
-          </ul>
+          <p class="tag tag-red">What you can do</p>
+          <h2>Keep it longer. Repair it. Recycle it.</h2>
+          <p>Every extra year a phone stays in use means less pressure to mine new cobalt. Repair before replacing, and recycle old devices so their cobalt re-enters the supply chain instead of new mines.</p>
         </section>
 
         <div class="action-row">
@@ -298,7 +202,7 @@
 
         <section class="sources reveal">
           <p class="tag">Estimate basis</p>
-          <p>Cobalt is estimated from battery capacity. Congo exposure, labour, wage, and worker-day numbers are awareness proxies — not claims about a specific brand or model.</p>
+          <p>Cobalt is estimated from battery capacity. Congo exposure, labour, wage and worker-day figures are awareness proxies — not claims about a specific brand or model.</p>
           <div>
             <a href="https://data.usgs.gov/datacatalog/data/USGS%3A6797fb00d34ea8c18376e159" target="_blank" rel="noreferrer">USGS 2025</a>
             <a href="https://www.amnesty.org/en/latest/campaigns/2016/06/drc-cobalt-child-labour/" target="_blank" rel="noreferrer">Amnesty</a>
@@ -306,10 +210,10 @@
           </div>
         </section>
 
-        <p class="footnote dark">Companion to the poster <em>“Cobalt Resources as Enablers of Conflict”</em> · Hayat, Baloch &amp; Fatima · 2026</p>
+        <p class="footnote">Companion to the poster <em>“Cobalt Resources as Enablers of Conflict”</em> · Hayat, Baloch &amp; Fatima · 2026</p>
       </section>
     </main>
 
-    <script src="app.js?v=4"></script>
+    <script src="app.js?v=5"></script>
   </body>
 </html>

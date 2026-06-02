@@ -529,11 +529,14 @@ function renderResult(phone, custom = false) {
   ui.selectedModel.textContent = custom ? `${formatNumber(phone.capacity)} mAh phone battery` : phone.model;
   ui.batteryBadge.textContent = `${formatNumber(phone.capacity)} mAh`;
 
-  // Animate main grams number with rolling effect
-  ui.gramsMain.innerHTML = `0.0<small>g</small>`;
-  animateNumber(ui.gramsMain, 0, estimate.mid, 1100, (v) => `${v.toFixed(1)}<small>g</small>`);
-  // Workaround so innerHTML stays correct with <small>
-  setTimeout(() => { ui.gramsMain.innerHTML = `${estimate.mid.toFixed(1)}<small>g</small>`; }, 1150);
+  // Animate only the number; the "g" unit is a separate static element so
+  // no markup is ever written as text. Resting value is always correct.
+  const gramsValue = document.querySelector("#gramsValue");
+  if (gramsValue) {
+    gramsValue.textContent = estimate.mid.toFixed(1);
+    animateNumber(gramsValue, 0, estimate.mid, 1100, (v) => v.toFixed(1));
+    setTimeout(() => { gramsValue.textContent = estimate.mid.toFixed(1); }, 1150);
+  }
 
   ui.gramsRange.textContent = `estimated range ${estimate.low.toFixed(1)} – ${estimate.high.toFixed(1)} g`;
   ui.gramsEquivalent.textContent = buildEquivalent(estimate.mid);
@@ -772,7 +775,8 @@ function syncPhoneCount(value) {
 
 function buildShareText() {
   const model = ui.selectedModel.textContent;
-  return `${model}: ~${ui.cobaltMetric.textContent} cobalt (≈${ui.drcMetric.textContent} DRC-linked), ${ui.labourMetric.textContent} labour-risk, ${ui.co2Metric.textContent} battery CO₂e. Check yours → cobalt-phone-checker.`;
+  const cobalt = (ui.gramsMain.textContent || "").replace(/\s+/g, "");
+  return `${model}: ~${cobalt} cobalt (≈${ui.drcMetric.textContent} DRC-linked), ${ui.labourMetric.textContent} labour-risk, ${ui.co2Metric.textContent} battery CO₂e. Check yours → cobalt-phone-checker.`;
 }
 
 async function shareCurrentResult() {
