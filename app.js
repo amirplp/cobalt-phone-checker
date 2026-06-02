@@ -1,8 +1,3 @@
-/* ============================================================
-   COBALT × CONGO — Phone Checker
-   Data + interactivity
-   ============================================================ */
-
 const phoneGroups = [
   ["Apple", [
     ["iPhone SE (2020)", 1821], ["iPhone SE (2022)", 2018],
@@ -291,15 +286,6 @@ const phones = [...phoneMap.values()].sort((a, b) =>
   a.brand.localeCompare(b.brand) || a.model.localeCompare(b.model, undefined, { numeric: true })
 );
 
-// Build brand list for chips
-const brandsInOrder = [];
-for (const phone of phones) {
-  if (!brandsInOrder.includes(phone.brand)) brandsInOrder.push(phone.brand);
-}
-
-// ============================================================
-// UI references
-// ============================================================
 const ui = {
   startScreen: document.querySelector("#startScreen"),
   resultScreen: document.querySelector("#resultScreen"),
@@ -308,7 +294,6 @@ const ui = {
   pageButtons: document.querySelectorAll("[data-page-target]"),
   modelSearch: document.querySelector("#modelSearch"),
   quickList: document.querySelector("#quickList"),
-  brandChips: document.querySelector("#brandChips"),
   batteryInput: document.querySelector("#batteryInput"),
   batteryRange: document.querySelector("#batteryRange"),
   modelCount: document.querySelector("#modelCount"),
@@ -317,9 +302,7 @@ const ui = {
   batteryBadge: document.querySelector("#batteryBadge"),
   gramsMain: document.querySelector("#gramsMain"),
   gramsRange: document.querySelector("#gramsRange"),
-  gramsEquivalent: document.querySelector("#gramsEquivalent"),
   modelNote: document.querySelector("#modelNote"),
-  crystalPile: document.querySelector("#crystalPile"),
   cobaltMetric: document.querySelector("#cobaltMetric"),
   cobaltMetricSub: document.querySelector("#cobaltMetricSub"),
   drcMetric: document.querySelector("#drcMetric"),
@@ -329,17 +312,23 @@ const ui = {
   wageMetricSub: document.querySelector("#wageMetricSub"),
   co2Metric: document.querySelector("#co2Metric"),
   co2MetricSub: document.querySelector("#co2MetricSub"),
+  peopleMetric: document.querySelector("#peopleMetric"),
+  peopleMetricSub: document.querySelector("#peopleMetricSub"),
   riskScore: document.querySelector("#riskScore"),
   riskBar: document.querySelector("#riskBar"),
   riskText: document.querySelector("#riskText"),
+  storyButtons: document.querySelectorAll(".story-button"),
+  storyKicker: document.querySelector("#storyKicker"),
+  storyValue: document.querySelector("#storyValue"),
+  storyText: document.querySelector("#storyText"),
+  storyBar: document.querySelector("#storyBar"),
+  storyHint: document.querySelector("#storyHint"),
   shareResult: document.querySelector("#shareResult"),
   shareStatus: document.querySelector("#shareStatus"),
-  restartBtn: document.querySelector("#restartBtn"),
   lensInsight: document.querySelector("#lensInsight"),
   lensButtons: document.querySelectorAll(".lens-button"),
   phoneCountInput: document.querySelector("#phoneCountInput"),
   phoneCountRange: document.querySelector("#phoneCountRange"),
-  pileVisual: document.querySelector("#pileVisual"),
   classCobalt: document.querySelector("#classCobalt"),
   classDrc: document.querySelector("#classDrc"),
   classCo2: document.querySelector("#classCo2"),
@@ -351,7 +340,7 @@ const ui = {
 let activePhone = null;
 let currentImpact = null;
 let activeLens = "cobalt";
-let activeBrand = "all";
+let activeStory = "conflict";
 
 const DRC_COBALT_SHARE = 0.76;
 const ARTISANAL_SHARE = 0.2;
@@ -363,22 +352,26 @@ const BATTERY_CO2_KG_PER_KWH = { low: 58, mid: 75, high: 92 };
 function formatNumber(value) {
   return new Intl.NumberFormat("en-US").format(value);
 }
+
 function formatMoney(value) {
   if (value < 0.01) return "<$0.01";
   if (value < 10) return `$${value.toFixed(2)}`;
   return `$${Math.round(value)}`;
 }
+
 function formatDuration(minutes) {
   if (minutes < 60) return `${Math.max(1, Math.round(minutes))} min`;
   const hours = minutes / 60;
   if (hours < 24) return `${hours.toFixed(hours < 10 ? 1 : 0)}h`;
   return `${(hours / 24).toFixed(1)} days`;
 }
+
 function formatWorkerDays(days) {
   if (days < 0.1) return `${days.toFixed(3)} day`;
   if (days < 10) return `${days.toFixed(2)} days`;
   return `${Math.round(days)} days`;
 }
+
 function formatMass(grams) {
   if (grams < 1000) return `${Math.round(grams)}g`;
   return `${(grams / 1000).toFixed(grams < 10000 ? 2 : 1)}kg`;
@@ -424,145 +417,40 @@ function estimateImpact(capacity) {
   return { cobalt, drc, labourMinutes, workerDays, wage, co2, risk };
 }
 
-// ============================================================
-// Crystal pile visualization
-// ============================================================
-function renderCrystalPile(target, grams, maxCrystals = 22) {
-  if (!target) return;
-  target.innerHTML = "";
-  const count = Math.max(3, Math.min(maxCrystals, Math.round(grams * 1.6)));
-  const cols = Math.ceil(Math.sqrt(count * 1.3));
-  const rect = target.getBoundingClientRect();
-  const width = rect.width || 110;
-  const colWidth = width / cols;
-  for (let i = 0; i < count; i++) {
-    const c = document.createElement("span");
-    c.className = "crystal";
-    const col = i % cols;
-    const row = Math.floor(i / cols);
-    const x = colWidth * col + (Math.random() * 6 - 3);
-    const y = row * 9 + (Math.random() * 4 - 2);
-    const size = 10 + Math.random() * 6;
-    const rotate = (Math.random() * 30 - 15).toFixed(1);
-    c.style.left = `${x + (colWidth - size) / 2}px`;
-    c.style.bottom = `${y + 8}px`;
-    c.style.width = `${size}px`;
-    c.style.height = `${size}px`;
-    c.style.setProperty("--r", `${rotate}deg`);
-    c.style.animationDelay = `${i * 30}ms`;
-    target.appendChild(c);
-  }
-}
-
-function renderClassPile(target, totalGrams) {
-  if (!target) return;
-  target.innerHTML = "";
-  const rect = target.getBoundingClientRect();
-  const width = rect.width || 320;
-  const height = rect.height || 90;
-  const baseCount = Math.min(140, Math.max(8, Math.round(totalGrams / 4)));
-  for (let i = 0; i < baseCount; i++) {
-    const c = document.createElement("span");
-    c.className = "pile-crystal";
-    const x = Math.random() * (width - 14);
-    const y = Math.random() * (height - 22);
-    c.style.left = `${x}px`;
-    c.style.bottom = `${y * 0.55 + 4}px`;
-    c.style.width = `${10 + Math.random() * 6}px`;
-    c.style.height = `${10 + Math.random() * 6}px`;
-    c.style.setProperty("--rot", `${(Math.random() * 30 - 15).toFixed(1)}deg`);
-    c.style.animationDelay = `${(i * 12) % 480}ms`;
-    target.appendChild(c);
-  }
-}
-
-// ============================================================
-// Equivalents — relatable comparisons
-// ============================================================
-function buildEquivalent(grams) {
-  const sugarCubes = (grams / 4).toFixed(1);
-  const paperclips = Math.round(grams);
-  const phones = grams / 11;
-  if (grams < 8)   return `≈ ${sugarCubes} sugar cubes — invisible in your pocket, heavy on a continent.`;
-  if (grams < 14)  return `≈ ${sugarCubes} sugar cubes or ${paperclips} paperclips. Multiplied by every phone, it builds a global supply pressure.`;
-  return `≈ ${sugarCubes} sugar cubes. Your phone alone is small — billions like it reshape a country.`;
-}
-
-// ============================================================
-// Count-up animation
-// ============================================================
-function animateNumber(el, fromValue, toValue, durationMs, formatter) {
-  const start = performance.now();
-  function step(now) {
-    const t = Math.min(1, (now - start) / durationMs);
-    const eased = 1 - Math.pow(1 - t, 3);
-    const value = fromValue + (toValue - fromValue) * eased;
-    el.textContent = formatter(value);
-    if (t < 1) requestAnimationFrame(step);
-  }
-  requestAnimationFrame(step);
-}
-
-function animateHeroStats() {
-  document.querySelectorAll("[data-countup]").forEach((el) => {
-    const target = Number(el.dataset.countup);
-    const prefix = el.dataset.prefix || "";
-    const suffix = el.dataset.suffix || "";
-    const finalText = `${prefix}${target}${suffix}`;
-    animateNumber(el, 0, target, 1400, (v) => `${prefix}${Math.round(v)}${suffix}`);
-    // Safety net: if rAF was throttled (e.g. opened in a background tab),
-    // make sure the final value still lands.
-    setTimeout(() => { if (el.textContent !== finalText) el.textContent = finalText; }, 1600);
-  });
-}
-
-// ============================================================
-// Render result
-// ============================================================
 function renderResult(phone, custom = false) {
   const impact = estimateImpact(phone.capacity);
   const estimate = impact.cobalt;
   currentImpact = impact;
   setResultAvailable(true);
-
   ui.selectedBrand.textContent = custom ? "Custom battery estimate" : phone.brand;
   ui.selectedModel.textContent = custom ? `${formatNumber(phone.capacity)} mAh phone battery` : phone.model;
   ui.batteryBadge.textContent = `${formatNumber(phone.capacity)} mAh`;
-
-  // Animate main grams number with rolling effect
-  ui.gramsMain.innerHTML = `0.0<small>g</small>`;
-  animateNumber(ui.gramsMain, 0, estimate.mid, 1100, (v) => `${v.toFixed(1)}<small>g</small>`);
-  // Workaround so innerHTML stays correct with <small>
-  setTimeout(() => { ui.gramsMain.innerHTML = `${estimate.mid.toFixed(1)}<small>g</small>`; }, 1150);
-
-  ui.gramsRange.textContent = `estimated range ${estimate.low.toFixed(1)} – ${estimate.high.toFixed(1)} g`;
-  ui.gramsEquivalent.textContent = buildEquivalent(estimate.mid);
-
+  ui.gramsMain.textContent = `${estimate.mid.toFixed(1)}g`;
+  ui.gramsRange.textContent = `estimated range: ${estimate.low.toFixed(1)}-${estimate.high.toFixed(1)}g`;
   if (ui.cobaltMetric) ui.cobaltMetric.textContent = `${estimate.mid.toFixed(1)}g`;
-  if (ui.cobaltMetricSub) ui.cobaltMetricSub.textContent = `range ${estimate.low.toFixed(1)}-${estimate.high.toFixed(1)}g`;
+  if (ui.cobaltMetricSub) ui.cobaltMetricSub.textContent = `${estimate.low.toFixed(1)}-${estimate.high.toFixed(1)}g estimated range`;
   ui.drcMetric.textContent = `${impact.drc.mid.toFixed(1)}g`;
   ui.labourMetric.textContent = formatDuration(impact.labourMinutes);
   ui.labourMetricSub.textContent = `${(impact.drc.mid * ARTISANAL_SHARE).toFixed(1)}g artisanal-risk cobalt`;
   ui.wageMetric.textContent = formatMoney(impact.wage.mid);
-  ui.wageMetricSub.textContent = `${formatMoney(impact.wage.low)} – ${formatMoney(impact.wage.high)} at $1-$2/day`;
+  ui.wageMetricSub.textContent = `${formatMoney(impact.wage.low)}-${formatMoney(impact.wage.high)} at $1-$2/day`;
   ui.co2Metric.textContent = `${impact.co2.mid.toFixed(1)}kg`;
-  ui.co2MetricSub.textContent = `${impact.co2.low.toFixed(1)}-${impact.co2.high.toFixed(1)}kg CO2e`;
-
-  ui.riskScore.textContent = `${impact.risk} / 100`;
-  ui.riskBar.style.width = "0%";
-  setTimeout(() => { ui.riskBar.style.width = `${impact.risk}%`; }, 220);
-  ui.riskText.textContent = impact.risk > 78
-    ? "Large battery, higher cobalt demand, and stronger Congo supply-chain exposure in this estimate."
-    : "Smaller battery, lower cobalt demand, but still connected to the same global cobalt risk pathway.";
-
+  ui.co2MetricSub.textContent = `${impact.co2.low.toFixed(1)}-${impact.co2.high.toFixed(1)}kg CO2e range`;
+  if (ui.peopleMetric) ui.peopleMetric.textContent = formatWorkerDays(impact.workerDays);
+  if (ui.peopleMetricSub) ui.peopleMetricSub.textContent = "proxy, not exact headcount";
+  if (ui.riskScore) ui.riskScore.textContent = `${impact.risk} / 100`;
+  if (ui.riskBar) ui.riskBar.style.width = `${impact.risk}%`;
+  if (ui.riskText) {
+    ui.riskText.textContent = impact.risk > 78
+      ? "Large battery, higher cobalt demand, and stronger Congo supply-chain exposure in this estimate."
+      : "Smaller battery, lower cobalt demand, but still connected to the same global cobalt risk pathway.";
+  }
   ui.modelNote.textContent = custom
-    ? "Battery-size only estimate. Useful when the exact model isn't listed or the battery was replaced."
-    : "Estimated from battery capacity and typical cobalt-containing lithium-ion cathode ranges. Exact cobalt content varies by chemistry and supplier.";
-
+    ? "This uses battery size only. It is useful when an exact phone model is missing or the battery has been replaced."
+    : "Estimate based on battery capacity and typical cobalt-containing lithium-ion cathode ranges. Exact cobalt content varies by chemistry and supplier.";
   renderLensInsight();
+  renderStory();
   renderClassScale();
-  // The crystal pile is rendered by showResultScreen once the screen is
-  // visible and has real layout dimensions.
 }
 
 function renderLensInsight() {
@@ -570,10 +458,10 @@ function renderLensInsight() {
   const model = ui.selectedModel.textContent;
   const cobaltValue = ui.cobaltMetric?.textContent || ui.gramsMain.textContent;
   const copy = {
-    cobalt: `${model}: about ${cobaltValue} of cobalt sits inside the battery. That tiny mass connects the phone in your hand to a global mining chain.`,
-    congo:  `${ui.drcMetric.textContent} of this estimate is linked to the DRC's share of global mined cobalt. The Congo is the centre of the world's battery supply.`,
-    labour: `~${ui.labourMetric.textContent} of artisanal-mining labour exposure — a simple proxy for the hidden human pressure behind battery minerals.`,
-    climate:`${ui.co2Metric.textContent} of CO₂e for cell production alone. One phone feels small; a whole classroom scales fast.`
+    cobalt: `${model}: about ${cobaltValue} of cobalt in the battery. That tiny mass connects the phone in your hand to a global mining chain.`,
+    congo: `${ui.drcMetric.textContent} of this estimate is linked to the DRC share of global mined cobalt. Congo is central to the world's battery supply.`,
+    labour: `${ui.labourMetric.textContent} of labour-risk exposure is a simple proxy for the hidden human pressure behind battery minerals.`,
+    climate: `${ui.co2Metric.textContent} battery CO2e is estimated for the cell. One phone feels small; a whole classroom scales fast.`
   };
   ui.lensInsight.textContent = copy[activeLens] || copy.cobalt;
   ui.lensButtons.forEach((button) => {
@@ -581,38 +469,68 @@ function renderLensInsight() {
   });
 }
 
-// ============================================================
-// Search / list
-// ============================================================
+function renderStory() {
+  if (!currentImpact || !ui.storyValue) return;
+  const model = ui.selectedModel.textContent;
+  const cobaltValue = ui.gramsMain.textContent;
+  const drcValue = ui.drcMetric.textContent;
+  const co2Value = ui.co2Metric.textContent;
+  const story = {
+    conflict: {
+      kicker: "Resource conflict pressure",
+      value: `${currentImpact.risk} / 100`,
+      width: currentImpact.risk,
+      text: `${model} is estimated at ${cobaltValue} cobalt. Higher cobalt demand can intensify competition around mines, trade routes, and weak governance.`,
+      hint: "Awareness score based on battery size and cobalt supply-chain exposure."
+    },
+    congo: {
+      kicker: "Congo-linked cobalt",
+      value: drcValue,
+      width: Math.min(100, DRC_COBALT_SHARE * 100),
+      text: `About ${drcValue} of this estimate is linked to the DRC share of global mined cobalt. Congo sits at the center of the battery mineral chain.`,
+      hint: "Uses the DRC share of global mined cobalt as a simple proxy."
+    },
+    climate: {
+      kicker: "Battery warming footprint",
+      value: co2Value,
+      width: Math.min(100, Math.max(28, currentImpact.co2.mid * 32)),
+      text: `${model} is estimated at ${co2Value} battery CO2e. One phone feels small, but a class or campus of phones makes the climate footprint visible.`,
+      hint: "Battery-cell production estimate, not the phone's full life-cycle footprint."
+    }
+  }[activeStory];
+
+  ui.storyKicker.textContent = story.kicker;
+  ui.storyValue.textContent = story.value;
+  ui.storyText.textContent = story.text;
+  ui.storyBar.style.width = `${story.width}%`;
+  ui.storyHint.textContent = story.hint;
+  ui.storyButtons.forEach((button) => {
+    button.classList.toggle("active", button.dataset.story === activeStory);
+  });
+}
+
 function renderList(query = "") {
   const normalizedQuery = normalizeText(query);
   const terms = normalizedQuery.split(/\s+/).filter(Boolean);
-  let filtered;
-  if (terms.length) {
-    filtered = phones.filter((phone) => terms.every((term) => phone.searchKey.includes(term)));
-  } else if (activeBrand !== "all") {
-    filtered = phones.filter((phone) => phone.brand === activeBrand);
-  } else {
-    filtered = [];
-  }
+  const filtered = terms.length
+    ? phones.filter((phone) => terms.every((term) => phone.searchKey.includes(term)))
+    : [];
 
   ui.modelCount.textContent = terms.length
     ? `${filtered.length} matches`
-    : activeBrand !== "all"
-      ? `${filtered.length} · ${activeBrand}`
-      : `${phones.length}+ models`;
+    : `${phones.length}+ models`;
 
-  if (!terms.length && activeBrand === "all") {
+  if (!terms.length) {
     ui.quickList.innerHTML = `
       <div class="search-empty">
-        <strong>Start typing — or pick a brand above</strong>
-        <span>Try iPhone 15, Galaxy S24, Spark 20, Redmi Note, Reno, Infinix Hot…</span>
+        <strong>Start typing to search</strong>
+        <span>Try your exact model name, for example A15, Spark 20, iPhone 13, Reno, Redmi, or Infinix.</span>
       </div>
     `;
     return;
   }
 
-  const visible = filtered.slice(0, 40);
+  const visible = filtered.slice(0, 36);
   ui.quickList.innerHTML = visible.map((phone) => {
     const estimate = estimateCobalt(phone.capacity);
     const active = phone === activePhone ? " active" : "";
@@ -620,7 +538,7 @@ function renderList(query = "") {
       <button class="model-button${active}" type="button" data-key="${phone.key}">
         <span>
           <strong>${phone.model}</strong>
-          <span>${phone.brand} · ${formatNumber(phone.capacity)} mAh</span>
+          <span>${phone.brand} - ${formatNumber(phone.capacity)} mAh battery</span>
         </span>
         <em>${estimate.mid.toFixed(1)}g</em>
       </button>
@@ -640,17 +558,9 @@ function renderList(query = "") {
   }
 }
 
-function renderBrandChips() {
-  const chips = [
-    `<button class="chip ${activeBrand === "all" ? "active" : ""}" data-brand="all" type="button">All brands</button>`,
-    ...brandsInOrder.slice(0, 14).map((b) => `<button class="chip ${activeBrand === b ? "active" : ""}" data-brand="${b}" type="button">${b}</button>`)
-  ];
-  ui.brandChips.innerHTML = chips.join("");
-}
-
 function setResultAvailable(available) {
   ui.goResult.disabled = !available;
-  ui.goResult.textContent = available ? "See my impact →" : "Search a model first";
+  ui.goResult.textContent = available ? "See my impact" : "Search a model first";
   ui.pageButtons.forEach((button) => {
     if (button.dataset.pageTarget === "result") {
       button.disabled = !available;
@@ -669,29 +579,6 @@ function showResultScreen() {
     button.classList.toggle("active", button.dataset.pageTarget === "result");
   });
   window.scrollTo({ top: 0, behavior: "auto" });
-
-  // Stagger the CSS entrance (visibility itself is guaranteed by CSS,
-  // this only sequences it). Restart the animation on every visit.
-  const reveals = ui.resultScreen.querySelectorAll(".reveal");
-  reveals.forEach((el, i) => {
-    el.style.animation = "none";
-    // force reflow so re-adding the animation replays it
-    void el.offsetWidth;
-    el.style.animation = "";
-    el.style.animationDelay = `${Math.min(i * 70, 560)}ms`;
-  });
-
-  // Decorative visuals — called directly (not via rAF, which is suspended
-  // in background tabs). getBoundingClientRect forces the layout we need.
-  // Isolated in try/catch so they can never block the page render.
-  try {
-    if (currentImpact) {
-      renderCrystalPile(ui.crystalPile, currentImpact.cobalt.mid);
-      renderClassPile(ui.pileVisual, currentImpact.cobalt.mid * getPhoneCount());
-    }
-  } catch (err) {
-    /* visuals are non-essential */
-  }
 }
 
 function showSearchScreen() {
@@ -704,17 +591,6 @@ function showSearchScreen() {
   window.scrollTo({ top: 0, behavior: "auto" });
   setTimeout(() => ui.modelSearch?.focus(), 120);
 }
-
-// ============================================================
-// Event wiring
-// ============================================================
-ui.brandChips.addEventListener("click", (event) => {
-  const chip = event.target.closest("[data-brand]");
-  if (!chip) return;
-  activeBrand = chip.dataset.brand;
-  renderBrandChips();
-  renderList(ui.modelSearch.value);
-});
 
 ui.quickList.addEventListener("click", (event) => {
   const button = event.target.closest("button");
@@ -753,14 +629,12 @@ function getPhoneCount() {
 function renderClassScale() {
   if (!currentImpact || !ui.classCobalt) return;
   const count = getPhoneCount();
-  const totalCobalt = currentImpact.cobalt.mid * count;
-  ui.classCobalt.textContent = formatMass(totalCobalt);
+  ui.classCobalt.textContent = formatMass(currentImpact.cobalt.mid * count);
   ui.classDrc.textContent = formatMass(currentImpact.drc.mid * count);
   ui.classCo2.textContent = `${(currentImpact.co2.mid * count).toFixed(currentImpact.co2.mid * count < 100 ? 1 : 0)}kg`;
   ui.classLabour.textContent = formatDuration(currentImpact.labourMinutes * count);
   ui.classWage.textContent = formatMoney(currentImpact.wage.mid * count);
   ui.classPeople.textContent = formatWorkerDays(currentImpact.workerDays * count);
-  renderClassPile(ui.pileVisual, totalCobalt);
 }
 
 function syncPhoneCount(value) {
@@ -772,27 +646,26 @@ function syncPhoneCount(value) {
 
 function buildShareText() {
   const model = ui.selectedModel.textContent;
-  return `${model}: ~${ui.cobaltMetric.textContent} cobalt (≈${ui.drcMetric.textContent} DRC-linked), ${ui.labourMetric.textContent} labour-risk, ${ui.co2Metric.textContent} battery CO₂e. Check yours → cobalt-phone-checker.`;
+  return `${model}: about ${ui.gramsMain.textContent} cobalt, ${ui.drcMetric.textContent} DRC-linked cobalt, ${ui.labourMetric.textContent} labour-risk exposure, ${ui.co2Metric.textContent} battery CO2e. Estimate from the Cobalt Phone Checker.`;
 }
 
 async function shareCurrentResult() {
   const text = buildShareText();
   try {
     if (navigator.share) {
-      await navigator.share({ title: "My phone's cobalt cost", text });
-      ui.shareStatus.textContent = "Shared ✓";
+      await navigator.share({ title: "My phone cobalt estimate", text });
+      ui.shareStatus.textContent = "Shared";
       return;
     }
     if (navigator.clipboard) {
       await navigator.clipboard.writeText(text);
-      ui.shareStatus.textContent = "Copied to clipboard ✓";
+      ui.shareStatus.textContent = "Copied";
       return;
     }
     ui.shareStatus.textContent = text;
   } catch (error) {
     ui.shareStatus.textContent = "Ready to share";
   }
-  setTimeout(() => { ui.shareStatus.textContent = ""; }, 3500);
 }
 
 ui.batteryInput.addEventListener("input", () => syncCustomCapacity(ui.batteryInput.value));
@@ -800,7 +673,6 @@ ui.batteryRange.addEventListener("input", () => syncCustomCapacity(ui.batteryRan
 ui.phoneCountInput?.addEventListener("input", () => syncPhoneCount(ui.phoneCountInput.value));
 ui.phoneCountRange?.addEventListener("input", () => syncPhoneCount(ui.phoneCountRange.value));
 ui.shareResult?.addEventListener("click", shareCurrentResult);
-ui.restartBtn?.addEventListener("click", showSearchScreen);
 ui.goResult?.addEventListener("click", showResultScreen);
 ui.customEstimate?.addEventListener("click", () => {
   syncCustomCapacity(ui.batteryInput.value);
@@ -823,39 +695,13 @@ ui.lensButtons.forEach((button) => {
     renderLensInsight();
   });
 });
+ui.storyButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    activeStory = button.dataset.story || "conflict";
+    renderStory();
+  });
+});
 
-// ============================================================
-// Reveal-on-scroll
-// ============================================================
-function armRevealAnimations() {
-  const items = document.querySelectorAll(".result-screen .reveal");
-  if (!("IntersectionObserver" in window)) {
-    items.forEach((el) => el.classList.add("is-visible"));
-    return;
-  }
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry, i) => {
-      if (entry.isIntersecting) {
-        const el = entry.target;
-        const delay = (Number(el.dataset.delay) || 0) + i * 60;
-        setTimeout(() => el.classList.add("is-visible"), delay);
-        observer.unobserve(el);
-      }
-    });
-  }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
-  items.forEach((el) => observer.observe(el));
-  // immediate reveal for top items
-  setTimeout(() => {
-    const top = Array.from(items).slice(0, 3);
-    top.forEach((el, i) => setTimeout(() => el.classList.add("is-visible"), i * 100));
-  }, 60);
-}
-
-// ============================================================
-// Init
-// ============================================================
 ui.modelCount.textContent = `${phones.length}+ models`;
 setResultAvailable(false);
-renderBrandChips();
 renderList();
-animateHeroStats();
